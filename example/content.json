@@ -1,0 +1,434 @@
+{
+ "src": "example/sample_paper.pdf",
+ "extra_zones": [
+  {
+   "page": 2,
+   "x0": 72.0,
+   "y0": 64.7,
+   "x1": 293.0,
+   "y1": 158.3
+  },
+  {
+   "page": 2,
+   "x0": 308.0,
+   "y0": 152.5,
+   "x1": 517.0,
+   "y1": 225.7
+  }
+ ],
+ "cite_color": "#0000ff",
+ "text_colors": [
+  {
+   "re": "https?://[^\\s，。、；]+",
+   "color": "#0000ff"
+  }
+ ],
+ "keep_ranges": [
+  {
+   "page": 2,
+   "y0": 325.0,
+   "y1": 445.0,
+   "x0": 300.0,
+   "x1": 530.0
+  }
+ ],
+ "slots": [
+  {
+   "id": "p1-c0-0",
+   "page": 1,
+   "col": 0,
+   "x0": 112.5,
+   "x1": 482.4,
+   "y0": 118.6,
+   "gap": 25.7,
+   "size": 15.0,
+   "en_first": "SampleTrack: A Minimal Fixture Paper for Paper T",
+   "en_text": "SampleTrack: A Minimal Fixture Paper for Paper Translation",
+   "nlines": 1,
+   "cn": "SampleTrack：一篇用于论文翻译测试的最小样张"
+  },
+  {
+   "id": "p1-c0-1",
+   "page": 1,
+   "col": 0,
+   "x0": 67.0,
+   "x1": 282.0,
+   "y0": 146.3,
+   "gap": 19.9,
+   "size": 12.0,
+   "en_first": "Zhang San1,  Si Li1  and  Wu Wang1",
+   "en_text": "Zhang San1,  Si Li1  and  Wu Wang1",
+   "nlines": 1,
+   "cn": "张三^{1}、李四^{1} 和 王五^{1}"
+  },
+  {
+   "id": "p1-c0-2",
+   "page": 1,
+   "col": 0,
+   "x0": 67.0,
+   "x1": 282.0,
+   "y0": 168.3,
+   "gap": 24.7,
+   "size": 9.0,
+   "en_first": "1Department of Computer Vision, Sample Universit",
+   "en_text": "1Department of Computer Vision, Sample University, Exampleville 100000",
+   "nlines": 1,
+   "cn": "^{1}示例大学计算机视觉系，示例市 100000"
+  },
+  {
+   "id": "p1-c0-3",
+   "page": 1,
+   "col": 0,
+   "x0": 67.0,
+   "x1": 282.0,
+   "y0": 195.0,
+   "gap": 16.2,
+   "size": 9.0,
+   "en_first": "Abstract",
+   "en_text": "Abstract",
+   "nlines": 1,
+   "cn": "摘要"
+  },
+  {
+   "id": "p1-c0-4",
+   "page": 1,
+   "col": 0,
+   "x0": 91.0,
+   "x1": 497.0,
+   "y0": 213.2,
+   "gap": 80.7,
+   "size": 9.0,
+   "en_first": "This fixture paper exists to exercise every feat",
+   "en_text": "This fixture paper exists to exercise every feature of the bilingual­paper­pdf engine: two­column typesetting, a booktabs table, a numbered equation, a vector figure with colored boxes, author­year ci",
+   "nlines": 7,
+   "cn": "本文这篇样张的存在目的，是让 bilingual-paper-pdf 引擎的每一项特性都得到演练：双栏排版、书板表格、编号公式、带彩色框的矢量插图、hyperref 蓝色的作者-年份引用、脚注以及竖排侧边印章。我们提出 SampleTrack [[（Chen 等 2021; Li 等 2018）]]，一个极小的基于记忆的跟踪器，它通过在一个微型记忆库中做最近邻查找来定位目标。在三个合成基准上，SampleTrack 以少 6.5 倍的参数量将跟踪质量比基线提升 12%。本文由 example/make_sample_paper.py 生成，可随时重新生成。代码见 [[https://github.com/example/sampletrack]]。"
+  },
+  {
+   "id": "p1-c0-5",
+   "page": 1,
+   "col": 0,
+   "x0": 67.0,
+   "x1": 282.0,
+   "y0": 295.9,
+   "gap": 15.6,
+   "size": 8.0,
+   "en_first": "Keywords: object tracking, bilingual translation",
+   "en_text": "Keywords: object tracking, bilingual translation, reproducible fixtures",
+   "nlines": 1,
+   "cn": "**关键词：** 目标跟踪、双语翻译、可复现样张"
+  },
+  {
+   "id": "p1-c0-6",
+   "page": 1,
+   "col": 0,
+   "x0": 67.0,
+   "x1": 282.0,
+   "y0": 313.5,
+   "gap": 28.5,
+   "size": 14.0,
+   "en_first": "1  Introduction",
+   "en_text": "1  Introduction",
+   "nlines": 1,
+   "cn": "1  引言"
+  },
+  {
+   "id": "p1-c0-7",
+   "page": 1,
+   "col": 0,
+   "x0": 67.0,
+   "x1": 282.0,
+   "y0": 344.0,
+   "gap": 74.5,
+   "size": 10.0,
+   "en_first": "General visual object tracking is a core task in",
+   "en_text": "General visual object tracking is a core task in computer vision. Memory­based methods 1 store past frames and localize the target by pixel association (Chen et al. 2021; Li et al. 2018). Over the pas",
+   "nlines": 6,
+   "cn": "通用视觉目标跟踪是计算机视觉中的一项核心任务。基于记忆的方法^{1}存储过往帧，并通过像素关联来定位目标[[（Chen 等 2021; Li 等 2018）]]。过去十年间，这一方法家族稳步壮大。"
+  },
+  {
+   "id": "p1-c0-8",
+   "page": 1,
+   "col": 0,
+   "x0": 67.0,
+   "x1": 282.0,
+   "y0": 420.5,
+   "gap": 50.5,
+   "size": 10.0,
+   "en_first": "A key challenge is the distractor : a nearby obj",
+   "en_text": "A key challenge is the distractor : a nearby object that visually resembles the target. Distractors increase localization uncertainty and mislead the tracker into irreversible drift (Li et al. 2018).",
+   "nlines": 4,
+   "cn": "一个关键挑战是干扰物——视觉上与目标相似的邻近物体。干扰物会增大定位的不确定性，并误导跟踪器发生不可逆的漂移[[（Li 等 2018）]]。"
+  },
+  {
+   "id": "p1-c0-9",
+   "page": 1,
+   "col": 0,
+   "x0": 67.0,
+   "x1": 282.0,
+   "y0": 473.0,
+   "gap": 236.8,
+   "size": 10.0,
+   "en_first": "In this paper we make three contributions. First",
+   "en_text": "In this paper we make three contributions. First, we formulate a minimal memory model that is small enough to inspect by eye. Second, we design this fixture so that every layout feature of a real pape",
+   "nlines": 7,
+   "cn": "本文做出三点贡献。第一，我们提出一个肉眼即可审查的极小记忆模型。第二，我们把这份样张设计成真实论文的每一种版面特性都至少出现一次。第三，我们以宽松许可发布全部内容，让样张能随工具链一同传播。"
+  },
+  {
+   "id": "p1-c0-10",
+   "page": 1,
+   "col": 0,
+   "x0": 67.0,
+   "x1": 282.0,
+   "y0": 711.8,
+   "gap": 98.7,
+   "size": 7.0,
+   "en_first": "1 This fixture paper is synthetic; all numbers a",
+   "en_text": "1 This fixture paper is synthetic; all numbers are placeholders and carry no scientific meaning.",
+   "nlines": 1,
+   "cn": "^{1}本样张论文为合成产物；所有数字均为占位符，不含任何科学含义。"
+  },
+  {
+   "id": "p1-c1-0",
+   "page": 1,
+   "col": 1,
+   "x0": 305.0,
+   "x1": 520.0,
+   "y0": 319.1,
+   "gap": 68.9,
+   "size": 10.0,
+   "en_first": "Nevertheless, a substantial source of failures",
+   "en_text": "Nevertheless, a substantial source of failures remains nearby objects that visually resemble the tracked one. These regions increase the localization uncertainty and mislead the tracker. Distractors c",
+   "nlines": 6,
+   "cn": "然而，跟踪失败的一个主要来源，仍然是那些在视觉上与被跟踪目标相似的邻近物体。这些区域会增大定位的不确定性并误导跟踪器。干扰物可分为外部干扰物，以及仅跟踪目标一部分时出现的内部干扰物[[（Chen 等 2021）]]。"
+  },
+  {
+   "id": "p1-c1-1",
+   "page": 1,
+   "col": 1,
+   "x0": 305.0,
+   "x1": 520.0,
+   "y0": 390.0,
+   "gap": 28.5,
+   "size": 14.0,
+   "en_first": "2  Related work",
+   "en_text": "2  Related work",
+   "nlines": 1,
+   "cn": "2  相关工作"
+  },
+  {
+   "id": "p1-c1-2",
+   "page": 1,
+   "col": 1,
+   "x0": 305.0,
+   "x1": 520.0,
+   "y0": 420.5,
+   "gap": 62.5,
+   "size": 10.0,
+   "en_first": "Early deep trackers fine­tuned pre­trained netwo",
+   "en_text": "Early deep trackers fine­tuned pre­trained networks during inference (Danelljan et al. 2019). Siamese trackers removed online training by template matching (Li et al. 2018), trading robustness for spe",
+   "nlines": 5,
+   "cn": "早期的深度跟踪器在推理阶段微调预训练网络[[（Danelljan 等 2019）]]。孪生跟踪器以模板匹配取消了在线训练[[（Li 等 2018）]]，用鲁棒性换取了速度。"
+  },
+  {
+   "id": "p1-c1-3",
+   "page": 1,
+   "col": 1,
+   "x0": 305.0,
+   "x1": 520.0,
+   "y0": 485.0,
+   "gap": 325.5,
+   "size": 10.0,
+   "en_first": "Memory­based frameworks localize the target by",
+   "en_text": "Memory­based frameworks localize the target by associating current features with stored past frames (Chen et al. 2021). Our fixture follows this line while keeping the memory tiny.",
+   "nlines": 4,
+   "cn": "基于记忆的框架通过把当前特征与存储的历史帧相关联来定位目标[[（Chen 等 2021）]]。本文样张沿用这一路线，但把记忆做得极小。"
+  },
+  {
+   "id": "p2-c0-0",
+   "page": 2,
+   "col": 0,
+   "x0": 67.0,
+   "x1": 282.0,
+   "y0": 159.3,
+   "gap": 37.3,
+   "size": 8.0,
+   "en_first": "Fig. 1 Overview of the SampleTrack pipeline. Bot",
+   "en_text": "Fig. 1 Overview of the SampleTrack pipeline. Both panels contain an Encoder and a Memory bank; the yellow box is always updated while the green box is written once.",
+   "nlines": 3,
+   "cn": "图 1  SampleTrack 流程概览。两个面板都包含一个编码器和一个记忆库；黄色框始终更新，绿色框只写入一次。"
+  },
+  {
+   "id": "p2-c0-1",
+   "page": 2,
+   "col": 0,
+   "x0": 67.0,
+   "x1": 282.0,
+   "y0": 198.5,
+   "gap": 28.5,
+   "size": 14.0,
+   "en_first": "3  Method",
+   "en_text": "3  Method",
+   "nlines": 1,
+   "cn": "3  方法"
+  },
+  {
+   "id": "p2-c0-2",
+   "page": 2,
+   "col": 0,
+   "x0": 67.0,
+   "x1": 282.0,
+   "y0": 229.0,
+   "gap": 54.5,
+   "size": 10.0,
+   "en_first": "SampleTrack keeps the most recent frame and a",
+   "en_text": "SampleTrack keeps the most recent frame and a fixed prototype in a tiny memory bank. The tracking quality is scored by a weighted mix of robustness and accuracy:",
+   "nlines": 4,
+   "cn": "SampleTrack 在一个微型记忆库中保留最近一帧和一个固定原型。跟踪质量由鲁棒性与准确度的加权混合来评分："
+  },
+  {
+   "id": "p2-c0-3",
+   "page": 2,
+   "col": 0,
+   "x0": 67.0,
+   "x1": 282.0,
+   "y0": 299.5,
+   "gap": 510.9,
+   "size": 10.0,
+   "en_first": "where R is the fraction of successfully tracked",
+   "en_text": "where R is the fraction of successfully tracked frames and A is the average overlap during successful tracking. The weight is fixed to 0.2 in all experiments, and no per­dataset tuning is performed (C",
+   "nlines": 5,
+   "cn": "其中 R 是成功跟踪帧的占比，A 是成功跟踪期间的平均重叠。所有实验中权重固定为 0.2，不做任何按数据集的调优[[（Chen 等 2021）]]。"
+  },
+  {
+   "id": "p2-c1-0",
+   "page": 2,
+   "col": 1,
+   "x0": 305.0,
+   "x1": 512.0,
+   "y0": 68.5,
+   "gap": 28.5,
+   "size": 14.0,
+   "en_first": "4  Experiments",
+   "en_text": "4  Experiments",
+   "nlines": 1,
+   "cn": "4  实验"
+  },
+  {
+   "id": "p2-c1-1",
+   "page": 2,
+   "col": 1,
+   "x0": 305.0,
+   "x1": 512.0,
+   "y0": 99.0,
+   "gap": 42.7,
+   "size": 10.0,
+   "en_first": "We evaluate on three synthetic benchmarks. Table",
+   "en_text": "We evaluate on three synthetic benchmarks. Table 1 reports the tracking quality; the best result of each column is marked in bold.",
+   "nlines": 3,
+   "cn": "我们在三个合成基准上做评估。表 1 报告跟踪质量；每列最优结果以粗体标出。"
+  },
+  {
+   "id": "p2-c1-2",
+   "page": 2,
+   "col": 1,
+   "x0": 305.0,
+   "x1": 512.0,
+   "y0": 143.7,
+   "gap": 18.3,
+   "size": 8.0,
+   "en_first": "Table 1 Tracking quality on synthetic benchmarks",
+   "en_text": "Table 1 Tracking quality on synthetic benchmarks. Best in bold.",
+   "nlines": 1,
+   "cn": "表 1  合成基准上的跟踪质量。最优以粗体标出。"
+  },
+  {
+   "id": "p2-c1-3",
+   "page": 2,
+   "col": 1,
+   "x0": 305.0,
+   "x1": 512.0,
+   "y0": 226.7,
+   "gap": 28.5,
+   "size": 14.0,
+   "en_first": "5  Conclusion",
+   "en_text": "5  Conclusion",
+   "nlines": 1,
+   "cn": "5  结论"
+  },
+  {
+   "id": "p2-c1-4",
+   "page": 2,
+   "col": 1,
+   "x0": 305.0,
+   "x1": 512.0,
+   "y0": 257.2,
+   "gap": 44.9,
+   "size": 10.0,
+   "en_first": "We introduced SampleTrack, a minimal fixture for",
+   "en_text": "We introduced SampleTrack, a minimal fixture for exercising the bilingual­paper­pdf engine. The fixture is regenerated by a single script and ships with a reference Chinese translation.",
+   "nlines": 4,
+   "cn": "我们提出了 SampleTrack——一个用于演练本引擎的最小样张。它由单个脚本再生成，并随附参考中文译文。"
+  },
+  {
+   "id": "p2-c1-5",
+   "page": 2,
+   "col": 1,
+   "x0": 305.0,
+   "x1": 512.0,
+   "y0": 304.1,
+   "gap": 28.6,
+   "size": 14.0,
+   "en_first": "References",
+   "en_text": "References",
+   "nlines": 1,
+   "cn": "参考文献"
+  }
+ ],
+ "overlays": [
+  {
+   "page": 2,
+   "find": "SampleTrack pipeline",
+   "cn": "SampleTrack 流程图"
+  },
+  {
+   "page": 2,
+   "find": "Encoder",
+   "cn": "编码器",
+   "all": true,
+   "align": "left"
+  },
+  {
+   "page": 2,
+   "find": "Memory",
+   "cn": "记忆",
+   "all": true,
+   "align": "left"
+  },
+  {
+   "page": 2,
+   "find": "bank",
+   "cn": "库",
+   "all": true,
+   "align": "left"
+  },
+  {
+   "page": 2,
+   "find": "Mask",
+   "cn": "掩码",
+   "all": true
+  },
+  {
+   "page": 2,
+   "find": "Method",
+   "cn": "方法"
+  },
+  {
+   "page": 2,
+   "find": "Quality",
+   "cn": "质量"
+  }
+ ],
+ "linkify": {
+  "apply": true
+ }
+}

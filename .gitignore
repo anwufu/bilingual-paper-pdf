@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+
+# 工作区临时产物
+example/src/_tmp/
+example/src/_*.png
+example/src/CMMI10.ttf
+example/src/CMR10.ttf
+fonts/fonts_test.pdf
+fonts/NotoSerifSC-vf.ttf
+
+# 本地构建输出 (example/sample_双语对照版.pdf 是基准产物, 随仓库提交)
+*_v2.pdf
+_audit*/

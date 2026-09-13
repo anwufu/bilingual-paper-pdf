@@ -1,0 +1,44 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  smoke:
+    name: 端到端冒烟测试 (样例论文)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 安装依赖
+        run: pip install -r requirements.txt
+
+      - name: 字体自检 (含系统字体替代)
+        run: python scripts/setup_fonts.py
+
+      - name: 用样例论文跑完整流水线
+        run: |
+          python scripts/mkzones.py --src example/sample_paper.pdf \
+              --out /tmp/zones.json
+          python scripts/build_solo.py --src example/sample_paper.pdf \
+              --content example/content.json --out /tmp/out.pdf
+          python scripts/links_ay.py /tmp/out.pdf
+
+      - name: 质量验收门
+        run: |
+          python scripts/check_release.py --src example/sample_paper.pdf \
+              --content example/content.json --pdf /tmp/out.pdf
+
+      - name: 上传构建产物
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bilingual-sample
+          path: /tmp/out.pdf
