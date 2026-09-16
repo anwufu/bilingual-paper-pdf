@@ -309,7 +309,9 @@ def main():
 
         for ov in [o for o in overlays if o['page'] == pno]:
             key = norm_eq(ov['find'])
-            matches = [ln for ln in lines if norm_eq(ln['text']) == key]
+            # 匹配池用**未过滤**的行: 页码(folio)行不在 lines 里, 但它可能正是要抹掉的目标
+            # (如栏右侧页底游离的段末英文短词)。overlay 是显式指令, 不应被分类过滤挡住。
+            matches = [ln for ln in get_lines(page) if norm_eq(ln['text']) == key]
             if 'y' in ov and len(matches) > 1:
                 matches.sort(key=lambda ln: abs((ln['y0'] + ln['y1']) / 2 - ov['y']))
             picks = matches if ov.get('all') else matches[:1]
@@ -319,11 +321,18 @@ def main():
             for hit in picks:
                 # 抹白: 从首个"字母≥2"的 span 到行尾 (保护行首图形符号, 覆盖尾部数学记号)
                 spans = hit['spans']
-                i0 = next((i for i, s in enumerate(spans)
-                           if sum(ch.isalpha() for ch in s['t']) >= 2), len(spans) - 1)
-                text_spans = spans[i0:]
-                bb = [min(s['x0'] for s in text_spans), min(s['y0'] for s in text_spans),
-                      max(s['x1'] for s in text_spans), max(s['y1'] for s in text_spans)]
+                if any(k in ov for k in ('x0', 'y0', 'x1', 'y1')):
+                    # 显式抹白框 (源页坐标): 整行残留的公式碎片可能以 '(' 或单个字母开头,
+                    # 行首符号保护规则会留下残字 "(M" -> 按给定范围整行抹白 (cn 通常为空)
+                    bb = [ov.get('x0', hit['x0']), ov.get('y0', hit['y0']),
+                          ov.get('x1', hit['x1']), ov.get('y1', hit['y1'])]
+                    text_spans = spans
+                else:
+                    i0 = next((i for i, s in enumerate(spans)
+                               if sum(ch.isalpha() for ch in s['t']) >= 2), len(spans) - 1)
+                    text_spans = spans[i0:]
+                    bb = [min(s['x0'] for s in text_spans), min(s['y0'] for s in text_spans),
+                          max(s['x1'] for s in text_spans), max(s['y1'] for s in text_spans)]
                 # 底色采样必须采**源页**同一坐标: 右半是 1:1 克隆, 但输出文档在 save 之前
                 # get_pixmap 渲染为空白 (PyMuPDF 行为), 采输出页只会得到白 -> 底色丢失
                 bg = ov.get('bg') or sample_bg(page, bb)
@@ -381,6 +390,11 @@ def main():
             size = s.get('size', ws_s.get('size', 10.0))
             x0 = ws_s['x0']
             width = ws_s['x1'] - ws_s['x0']
+            if 'box' in s:
+                # 显式排版框 [x0, x1] (源页坐标): 栏右界取的是"行右端众数", 参考文献页
+                # 的窄条目会把众数拉偏, 页眉/整宽块跟着变窄并折行 -> 与栏宽解耦
+                x0 = float(s['box'][0])
+                width = float(s['box'][1]) - x0
             y0 = ws_s['y0']
             gap = s.get('gap', ws_s.get('gap', 770 - y0))
             # 游标顺接: 若本槽锚点已被前一槽的中文流越过, 从游标处续排 (防咬合叠印)

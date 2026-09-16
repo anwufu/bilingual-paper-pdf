@@ -87,11 +87,30 @@ def main():
         return False
 
     cn_ids = {s['id'] for s in content['slots'] if s.get('cn', '').strip()}
+    # 合并感知 (pitfall 14e/14f): agent 可能把碎片行并进前槽后删掉独立槽,
+    # 重建的 worksheet 仍会生成它。判定覆盖: 碎片行落在某已译内容槽的
+    # [y0, y0+gap) 排版跨度内 (同页同栏), 或其 en_text 被某已译槽完整包含
+    norm = lambda t: re.sub(r'\s+', '', t or '')
+    cn_slots = [t for t in content['slots'] if t.get('cn', '').strip()]
+    merged_en = [(norm(t.get('en_text', '')), t['page']) for t in cn_slots]
+
+    def covered_by_merge(s):
+        key = norm(s.get('en_text', ''))[:60]
+        if len(key) >= 12 and any(key in en and pg == s['page'] for en, pg in merged_en):
+            return True
+        for t in cn_slots:
+            if t['page'] == s['page'] and t.get('col') == s.get('col') \
+                    and t['y0'] - 2 <= s['y0'] < t['y0'] + t.get('gap', 0):
+                return True
+        return False
+
     missing = []
     for s in ws:
         if s['id'] in cn_ids:
             continue
         if kept_by_range(s['page'], s['x0'], s['x1'], s['y0'], s.get('size', 10.0)):
+            continue
+        if covered_by_merge(s):
             continue
         missing.append(s['id'])
     check('槽位覆盖', not missing, f'未翻译且未保留: {missing[:6]}' if missing else
@@ -138,6 +157,21 @@ def main():
         lines = [ln for ln in get_lines(sp) if ln['x1'] >= 0.075 * W]
         zones = detect_zones(sp, W) + [[z['x0'], z['y0'], z['x1'], z['y1']]
                                        for z in extra if z['page'] == pno]
+        # 复现构建侧 --trim (content['zone_trim']: [{'page':3,'y1':280}]),
+        # 否则被 trim 救回的图注/正文行在重建里仍落在旧区域内 -> 假阳性
+        zt = [t for t in content.get('zone_trim', []) if t.get('page') == pno]
+        if zt:
+            trimmed = []
+            for z in zones:
+                z = list(z)
+                for t in zt:
+                    if 'y1' in t:
+                        z[3] = min(z[3], t['y1'])
+                    if 'y0' in t:
+                        z[1] = max(z[1], t['y0'])
+                if z[3] > z[1] and z[2] > z[0]:
+                    trimmed.append(z)
+            zones = trimmed
         cols = {0: [], 1: []}
         for ln in lines:
             cols[SW.line_col(ln, W)].append(ln)
@@ -153,12 +187,17 @@ def main():
         ovset = {re.sub(r'\s+', '', o['find']) for o in content.get('overlays', [])
                  if o['page'] == pno}
         for a in cn:
+            # 与"中文叠印"检查同族的 ink-box 修正: NotoSerif 行框 ascent 膨胀
+            # (视觉验证过的假阳性: 公式下伸部/轴刻度与中文行框贴边, 墨迹实际不接触)
+            a_sz = a['bbox'][3] - a['bbox'][1]
+            ai = [a['bbox'][0], a['bbox'][1] + 0.24 * a_sz,
+                  a['bbox'][2], a['bbox'][3] - 0.05 * a_sz]
             for k in keptset:
                 if re.sub(r'\s+', '', k['text']) in ovset:
                     continue
                 bb = [k['x0'] + W, k['y0'], k['x1'] + W, k['y1']]
-                ox = min(a['bbox'][2], bb[2]) - max(a['bbox'][0], bb[0])
-                oy = min(a['bbox'][3], bb[3]) - max(a['bbox'][1], bb[1])
+                ox = min(ai[2], bb[2]) - max(ai[0], bb[0])
+                oy = min(ai[3], bb[3]) - max(ai[1], bb[1])
                 if ox > 2.5 and oy > 2.0:
                     overlap_en += 1
 

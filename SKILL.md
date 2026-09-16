@@ -105,8 +105,12 @@ python scripts/audit.py --mine 双语版.pdf --outdir _audit
 ## 交付前清理
 
 - 文件偏大（完整字体内嵌，~40MB）属正常；要压缩用 fontTools 对实际用到的码点子集化（**不要用 `doc.subset_fonts()`**，见 pitfalls 第3条）
-- 交付前跑 references/content-format.md 末尾的 7 项机器自检；视觉审核用 judge agent 逐页过，
-  每个 fail 都要定位到坐标再修（本次 4 个 fail 里 2 个是误报，也要用坐标证据判定）
+- 交付前跑机器门禁（7 项，全过才可交付）：
+  `python scripts/check_release.py --src 原文.pdf --content content.json --pdf 成品.pdf --build-log build.log`
+  （标记配对/槽位覆盖/中文叠印/中文×保留英文/缺字形/链接数/日志无警告；日志重定向见 pitfalls 61；
+  门禁盲区见 pitfalls 58——溢出跨栏的叠印要另用分词宽度扫描器排查）
+- 视觉审核用 judge agent 逐页过，每个 fail 都要定位到坐标再修（坐标证据判定，防误报）；
+  **重建后必须立即重渲审核图**（pitfalls 60，旧图会误导判）
 - 报告里如实说明：哪些内容级差异已修为零、残留的渲染级漂移在哪几页、参考版/译文的已知瑕疵（如原文自身的排版毛病不要替用户"顺手修掉"，要先提出）
 
 ## 换新论文时的注意点

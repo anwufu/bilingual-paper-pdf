@@ -38,9 +38,12 @@ def line_col(ln, W):
 
 
 def is_folio(ln, W, H):
-    """页码 (Springer 把 folio 排在版面底部的栏缝正中): 既不抹白也不翻译, 保留克隆原物"""
+    """页码 (Springer 把 folio 排在版面底部的栏缝正中): 既不抹白也不翻译, 保留克隆原物。
+    **必须是短标** — 单栏论文的整宽正文行中心也正好落在页心, 只按"居中+底部"判会把
+    页面底部约 20% 的正文行全部当成页码(既不翻译也不抹白, 右半留下整段英文)。"""
     cx = (ln['x0'] + ln['x1']) / 2
-    return abs(cx - W / 2) < 12 and ln['y0'] > 0.80 * H
+    return (abs(cx - W / 2) < 12 and ln['y0'] > 0.80 * H
+            and (ln['x1'] - ln['x0']) < 0.15 * W)
 
 
 def get_lines(page):
