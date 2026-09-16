@@ -95,6 +95,9 @@ python scripts/build_solo.py --src 原文.pdf --content content.json --out 双�
 ```
 每段中文起点 = 左页对应英文段起点（±2pt 工艺精度），中英长度差用段内行距梯子（1.50→1.30，再缩字号 9.5）吸收，行内两端对齐。**警告输出（行距压底/溢出/空槽位）必须处理完再进入审核。**
 
+作者-年份引用风格的论文（正文引用形如 (Surname et al., 2020)）构建后补一步右半引用跳转：
+`python scripts/links_ay.py 双语版.pdf`（数字编号式 [n] 无需此步，linkify 已处理；条目分词/字体层规则见 pitfalls 60 一带的批量经验）。
+
 ### B4. 审核
 
 ```bash
