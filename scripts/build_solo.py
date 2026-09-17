@@ -25,41 +25,25 @@ from solo_worksheet import build_worksheet, get_lines, detect_zones, classify_li
 
 
 def resolve_fonts(fonts_dir):
-    win = os.environ.get('WINDIR', r'C:\Windows') + r'\Fonts'
-    spec = {
-        'NSR': [os.path.join(fonts_dir, 'NotoSerifSC-Regular.ttf')],
-        'NSB': [os.path.join(fonts_dir, 'NotoSerifSC-Bold.ttf')],
-        'CMI': [os.path.join(fonts_dir, 'CMU-Italic.otf')],
-        'SYM': [os.path.join(win, 'seguisym.ttf')],
-        'TMR': [os.path.join(win, 'times.ttf')],
-        'TMB': [os.path.join(win, 'timesbd.ttf')],
-        'TMI': [os.path.join(win, 'timesi.ttf')],
-        'TMBI': [os.path.join(win, 'timesbi.ttf')],
-    }
-    fonts, files, missing = {}, {}, []
-    for k, cands in spec.items():
-        for p in cands:
-            if os.path.exists(p):
-                try:
-                    fonts[k] = fitz.Font(fontfile=p)
-                    files[k] = p
-                    break
-                except Exception:
-                    continue
-        else:
-            missing.append(k)
-    if missing:
-        raise SystemExit(f'字体缺失: {missing} — 先运行 setup_fonts.py')
-    return fonts, files
+    from fontconfig import resolve_fonts as _rf
+    return _rf(fonts_dir)
+
+
+def _system_font_candidates():
+    from fontconfig import system_font_candidates
+    return system_font_candidates()
+
 
 
 ap = argparse.ArgumentParser()
 ap.add_argument('--src', required=True)
 ap.add_argument('--content', required=True)
 ap.add_argument('--out', required=True)
-ap.add_argument('--fonts-dir', default=os.path.join(SKILL_DIR, '_fonts'))
+ap.add_argument('--fonts-dir', default=None,
+                help='字体目录 (默认: <仓库>/fonts, 其次 <仓库>/_fonts)')
 args = ap.parse_args()
-FF, FFILE = resolve_fonts(args.fonts_dir)
+from fontconfig import default_fonts_dir  # noqa: E402
+FF, FFILE = resolve_fonts(args.fonts_dir or default_fonts_dir(SKILL_DIR))
 
 
 def col_tuple(c):
