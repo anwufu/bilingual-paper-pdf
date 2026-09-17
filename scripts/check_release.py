@@ -99,8 +99,10 @@ def main():
         if len(key) >= 12 and any(key in en and pg == s['page'] for en, pg in merged_en):
             return True
         for t in cn_slots:
-            if t['page'] == s['page'] and t.get('col') == s.get('col') \
-                    and t['y0'] - 2 <= s['y0'] < t['y0'] + t.get('gap', 0):
+            # 自定义槽（只给 id/page/col/cn，无几何字段）无法做 y 跨度判定 -> 跳过
+            if 'y0' not in t or t['page'] != s['page'] or t.get('col') != s.get('col'):
+                continue
+            if t['y0'] - 2 <= s['y0'] < t['y0'] + t.get('gap', 0):
                 return True
         return False
 

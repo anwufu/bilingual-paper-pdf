@@ -25,25 +25,41 @@ from solo_worksheet import build_worksheet, get_lines, detect_zones, classify_li
 
 
 def resolve_fonts(fonts_dir):
-    from fontconfig import resolve_fonts as _rf
-    return _rf(fonts_dir)
-
-
-def _system_font_candidates():
-    from fontconfig import system_font_candidates
-    return system_font_candidates()
-
+    win = os.environ.get('WINDIR', r'C:\Windows') + r'\Fonts'
+    spec = {
+        'NSR': [os.path.join(fonts_dir, 'NotoSerifSC-Regular.ttf')],
+        'NSB': [os.path.join(fonts_dir, 'NotoSerifSC-Bold.ttf')],
+        'CMI': [os.path.join(fonts_dir, 'CMU-Italic.otf')],
+        'SYM': [os.path.join(win, 'seguisym.ttf')],
+        'TMR': [os.path.join(win, 'times.ttf')],
+        'TMB': [os.path.join(win, 'timesbd.ttf')],
+        'TMI': [os.path.join(win, 'timesi.ttf')],
+        'TMBI': [os.path.join(win, 'timesbi.ttf')],
+    }
+    fonts, files, missing = {}, {}, []
+    for k, cands in spec.items():
+        for p in cands:
+            if os.path.exists(p):
+                try:
+                    fonts[k] = fitz.Font(fontfile=p)
+                    files[k] = p
+                    break
+                except Exception:
+                    continue
+        else:
+            missing.append(k)
+    if missing:
+        raise SystemExit(f'字体缺失: {missing} — 先运行 setup_fonts.py')
+    return fonts, files
 
 
 ap = argparse.ArgumentParser()
 ap.add_argument('--src', required=True)
 ap.add_argument('--content', required=True)
 ap.add_argument('--out', required=True)
-ap.add_argument('--fonts-dir', default=None,
-                help='字体目录 (默认: <仓库>/fonts, 其次 <仓库>/_fonts)')
+ap.add_argument('--fonts-dir', default=os.path.join(SKILL_DIR, '_fonts'))
 args = ap.parse_args()
-from fontconfig import default_fonts_dir  # noqa: E402
-FF, FFILE = resolve_fonts(args.fonts_dir or default_fonts_dir(SKILL_DIR))
+FF, FFILE = resolve_fonts(args.fonts_dir)
 
 
 def col_tuple(c):
@@ -381,7 +397,14 @@ def main():
                          color=None, fill=(1, 1, 1))
 
         # 中文槽位渲染 (每栏维护游标: 锚点被前槽咬住时顺接续排, 结构上杜绝叠印)
-        for s in content['slots']:
+        # 槽序按"重建 worksheet 的真实 y0"排 (pitfall 64): 自定义槽可以不带几何字段,
+        # 若按 content 自带 y0 排会落到 0 而被排到最前 -> 列游标顺接把中文一路推到栏底。
+        def _slot_key(s):
+            ws_s = ws_by_id.get(s['id'])
+            y = ws_s['y0'] if ws_s and 'y0' in ws_s else s.get('y0')
+            return (s['page'], s.get('col', 0), y if y is not None else 0.0)
+
+        for s in sorted(content['slots'], key=_slot_key):
             if s['page'] != pno:
                 continue
             if not s.get('cn', '').strip():
@@ -536,9 +559,35 @@ def main():
 
     out.save(args.out, garbage=3, deflate=True)
     print(f'saved {args.out}, {len(out.tobytes()) / 1e6:.1f} MB')
-    missing = [s['id'] for s in content['slots'] if not s.get('cn', '').strip()]
+    # 空槽告警: keep_ranges 覆盖的空槽是合法留白(参考文献等), 不计入告警
+    keep = content.get('keep_ranges', [])
+
+    def kept_by_range(pno, x0, x1, y0, size):
+        for kr in keep:
+            if kr.get('page') != pno:
+                continue
+            cy = y0 + 0.4 * size
+            cx = (x0 + x1) / 2
+            if kr['y0'] <= cy <= kr['y1'] and kr.get('x0', 0) <= cx <= kr.get('x1', 1e9):
+                return True
+        return False
+
+    missing = []
+    for s in content['slots']:
+        if s.get('cn', '').strip():
+            continue
+        if 'y0' in s and kept_by_range(s['page'], s.get('x0', 0), s.get('x1', 0),
+                                       s['y0'], s.get('size', 10.0)):
+            continue
+        missing.append(s['id'])
     if missing:
         print(f'[警告] 未填写的槽位 ({len(missing)}): {missing[:10]}{"..." if len(missing) > 10 else ""}')
+    # id 回退告警: content 槽 id 不在重建 worksheet 时, 引擎会用 content 自带坐标,
+    # 几何一旦与重建结果不符就是静默错位 (pitfall 63)
+    stray = [s['id'] for s in content['slots'] if s['id'] not in ws_by_id]
+    if stray:
+        print(f'[警告] content 槽 id 不在重建 worksheet (几何可能错位, 见 pitfalls 63): '
+              f'{stray[:10]}{"..." if len(stray) > 10 else ""}')
     print('>>> 下一步必须跑 audit.py + 逐页目检, 未过审不得交付 <<<')
 
 
