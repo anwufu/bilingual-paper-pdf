@@ -566,12 +566,18 @@ def main():
         missing.append(s['id'])
     if missing:
         print(f'[警告] 未填写的槽位 ({len(missing)}): {missing[:10]}{"..." if len(missing) > 10 else ""}')
-    # id 回退告警: content 槽 id 不在重建 worksheet 时, 引擎会用 content 自带坐标,
-    # 几何一旦与重建结果不符就是静默错位 (pitfall 63)
+    # id 回退提示: content 槽 id 不在重建 worksheet 时, 引擎会用 content 自带坐标。
+    # 自带几何(x0/x1/y0 齐全) = 有意的自定义槽(如跨栏拆槽), 属正常;
+    # 几何缺失 = 极可能因 zone/trim 重分类导致 id 顺移后的残留, 会静默错位 (pitfall 63)。
     stray = [s['id'] for s in content['slots'] if s['id'] not in ws_by_id]
+    stray_bad = [s['id'] for s in content['slots'] if s['id'] not in ws_by_id
+                 and not all(k in s for k in ('x0', 'x1', 'y0'))]
     if stray:
-        print(f'[警告] content 槽 id 不在重建 worksheet (几何可能错位, 见 pitfalls 63): '
-              f'{stray[:10]}{"..." if len(stray) > 10 else ""}')
+        print(f'  [提示] 自定义槽 (不在重建 worksheet, 使用自带几何): {len(stray)} 个 '
+              f'{stray[:6]}{"..." if len(stray) > 6 else ""}')
+    if stray_bad:
+        print(f'[警告] 槽 id 不在重建 worksheet 且缺几何 (会静默错位, 见 pitfalls 63): '
+              f'{stray_bad[:10]}{"..." if len(stray_bad) > 10 else ""}')
     print('>>> 下一步必须跑 audit.py + 逐页目检, 未过审不得交付 <<<')
 
 
