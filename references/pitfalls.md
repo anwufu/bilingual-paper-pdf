@@ -277,6 +277,22 @@
       事故即采样采到描边）；
     - 单栏论文页底整宽行、双栏论文右栏段末短行是 folio 误判的两个高发位置。
 
+75. **skill 版与仓库版的字体块必须各自保留，只同步业务改动**：两份 `build_solo.py` 的字体解析
+    块**本来就是不同的**——skill 版走 Windows 字体路径（`WINDIR/Fonts` 下的 times.ttf 等）+ `<skill>/_fonts/`，
+    仓库版走跨平台 `fontconfig.py`（Linux 找 Liberation/DejaVu、macOS 找系统 Times）+ `<repo>/fonts/`。
+    `setup_fonts.py` 同理（skill 下载字体，仓库从系统解析）。
+    **严禁把一份整体复制覆盖另一份**——曾把 skill 版覆盖到仓库，导致 CI 在 ubuntu 上
+    `SystemExit: 字体缺失 ['NSR','NSB','CMI','SYM','TMR',...]`（提交 2e20927 引入、c4edc87 回滚）。
+    正确做法：用 Edit/补丁**只把业务改动点**打进两个文件，改完 `diff` 复核差异只落在字体块，
+    并逐项 grep 业务标记（如 `_slot_key` / 告警文案）确认两边命中数一致。
+    另：`diff` 显示这两处差异是**预期的**，不是漏同步。
+
+76. **改引擎后必须验证"行为中性"**：任何 build_solo/门禁改动，都要用一份已有 content 重建并
+    与已交付 PDF 做**逐页像素对比**（`get_pixmap` + `ImageChops.difference`），确认零差异才推。
+    本批用此法验证了 STARK/SAM2/OSTrack 共 77 页零差异。仓库侧改动还要**先本地跑通 CI 的四步**
+    （`mkzones → build_solo → links_ay → check_release`）再 push——CI 跑在 ubuntu + Python 3.12，
+    本机 Windows 通过不代表 CI 通过（字体解析差异就是靠这一步才暴露的）。
+
 ## 版权提示
 
 Noto Serif SC / CMU / Segoe UI Symbol / Times 的使用与内嵌遵循各自授权
